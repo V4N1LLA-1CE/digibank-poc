@@ -9,6 +9,7 @@ import com.digibank.accounts.mapper.CustomerMapper;
 import com.digibank.accounts.repository.AccountsRepository;
 import com.digibank.accounts.repository.CustomerRepository;
 import com.digibank.accounts.service.IAccountsService;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,8 @@ public class AccountsServiceImpl implements IAccountsService {
 
     // turn into customer entity and create in database
     Customer customerToSave = CustomerMapper.mapToCustomer(customerDto);
+    customerToSave.setCreatedAt(LocalDateTime.now());
+    customerToSave.setCreatedBy("Anonymous");
     Customer savedCustomer = customerRepository.save(customerToSave);
 
     // create a new account for customer that has just been saved
@@ -47,11 +50,17 @@ public class AccountsServiceImpl implements IAccountsService {
    */
   private Accounts buildNewAccount(Customer customer) {
     long randomAccNumber = 1000000000L + new Random().nextInt(900000000);
-    return Accounts.builder()
-        .customerId(customer.getCustomerId())
-        .accountNumber(randomAccNumber)
-        .accountType(AccountsConstants.SAVINGS)
-        .branchAddress(AccountsConstants.ADDRESS)
-        .build();
+    Accounts newAccount =
+        Accounts.builder()
+            .customerId(customer.getCustomerId())
+            .accountNumber(randomAccNumber)
+            .accountType(AccountsConstants.SAVINGS)
+            .branchAddress(AccountsConstants.ADDRESS)
+            .build();
+
+    newAccount.setCreatedAt(LocalDateTime.now());
+    newAccount.setCreatedBy("Anonymous");
+
+    return newAccount;
   }
 }
