@@ -20,7 +20,7 @@ public class AccountsController {
 
   private final IAccountsService accountsService;
 
-  @PostMapping("/")
+  @PostMapping("")
   public ResponseEntity<ResponseDto> createAccount(@RequestBody CustomerDto customerDto) {
 
     accountsService.createAccount(customerDto);
