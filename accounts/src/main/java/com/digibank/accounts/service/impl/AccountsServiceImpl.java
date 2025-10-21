@@ -4,10 +4,12 @@ import com.digibank.accounts.constants.AccountsConstants;
 import com.digibank.accounts.dto.CustomerDto;
 import com.digibank.accounts.entity.Accounts;
 import com.digibank.accounts.entity.Customer;
+import com.digibank.accounts.exception.CustomerAlreadyExistsException;
 import com.digibank.accounts.mapper.CustomerMapper;
 import com.digibank.accounts.repository.AccountsRepository;
 import com.digibank.accounts.repository.CustomerRepository;
 import com.digibank.accounts.service.IAccountsService;
+import java.util.Optional;
 import java.util.Random;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,9 +23,16 @@ public class AccountsServiceImpl implements IAccountsService {
 
   @Override
   public void createAccount(CustomerDto customerDto) {
+    // check if there is existing user using the same mobile number in the database
+    Optional<Customer> customer = customerRepository.findByMobileNumber(customerDto.mobileNumber());
+    if (customer.isPresent()) {
+      throw new CustomerAlreadyExistsException(
+          "Customer already registered with given mobile number: " + customerDto.mobileNumber());
+    }
+
     // turn into customer entity and create in database
-    Customer customer = CustomerMapper.mapToCustomer(customerDto);
-    Customer savedCustomer = customerRepository.save(customer);
+    Customer customerToSave = CustomerMapper.mapToCustomer(customerDto);
+    Customer savedCustomer = customerRepository.save(customerToSave);
 
     // create a new account for customer that has just been saved
     accountsRepository.save(buildNewAccount(savedCustomer));
