@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Accounts extends Metadata {
+public class Account extends Metadata {
   @Id
   @Column(name = "account_number")
   private Long accountNumber;

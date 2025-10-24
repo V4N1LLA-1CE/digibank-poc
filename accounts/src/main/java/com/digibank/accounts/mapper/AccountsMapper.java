@@ -1,7 +1,7 @@
 package com.digibank.accounts.mapper;
 
-import com.digibank.accounts.dto.AccountsDto;
-import com.digibank.accounts.entity.Accounts;
+import com.digibank.accounts.dto.AccountDto;
+import com.digibank.accounts.entity.Account;
 
 public final class AccountsMapper {
 
@@ -9,13 +9,13 @@ public final class AccountsMapper {
     // restrict instantiation
   }
 
-  public static AccountsDto mapToAccountsDto(Accounts accounts) {
-    return new AccountsDto(
-        accounts.getAccountNumber(), accounts.getAccountType(), accounts.getBranchAddress());
+  public static AccountDto mapToAccountsDto(Account account) {
+    return new AccountDto(
+        account.getAccountNumber(), account.getAccountType(), account.getBranchAddress());
   }
 
-  public static Accounts mapToAccounts(AccountsDto accountsDto) {
-    return Accounts.builder()
+  public static Account mapToAccounts(AccountDto accountsDto) {
+    return Account.builder()
         .accountNumber(accountsDto.accountNumber())
         .accountType(accountsDto.accountType())
         .branchAddress(accountsDto.branchAddress())

@@ -2,9 +2,10 @@ package com.digibank.accounts.service.impl;
 
 import com.digibank.accounts.constants.AccountsConstants;
 import com.digibank.accounts.dto.CustomerDto;
-import com.digibank.accounts.entity.Accounts;
+import com.digibank.accounts.entity.Account;
 import com.digibank.accounts.entity.Customer;
 import com.digibank.accounts.exception.CustomerAlreadyExistsException;
+import com.digibank.accounts.exception.ResourceNotFoundException;
 import com.digibank.accounts.mapper.CustomerMapper;
 import com.digibank.accounts.repository.AccountsRepository;
 import com.digibank.accounts.repository.CustomerRepository;
@@ -48,10 +49,10 @@ public class AccountsServiceImpl implements IAccountsService {
    * @param customer - Customer entity to associate with the new account
    * @return Accounts entity with generated account number and default settings
    */
-  private Accounts buildNewAccount(Customer customer) {
+  private Account buildNewAccount(Customer customer) {
     long randomAccNumber = 1000000000L + new Random().nextInt(900000000);
-    Accounts newAccount =
-        Accounts.builder()
+    Account newAccount =
+        Account.builder()
             .customerId(customer.getCustomerId())
             .accountNumber(randomAccNumber)
             .accountType(AccountsConstants.SAVINGS)
@@ -62,5 +63,24 @@ public class AccountsServiceImpl implements IAccountsService {
     newAccount.setCreatedBy("Anonymous");
 
     return newAccount;
+  }
+
+  @Override
+  public CustomerDto fetchAccount(String mobileNumber) {
+    Customer customer =
+        customerRepository
+            .findByMobileNumber(mobileNumber)
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber));
+
+    Account account =
+        accountsRepository
+            .findByCustomerId(customer.getCustomerId())
+            .orElseThrow(
+                () ->
+                    new ResourceNotFoundException(
+                        "Accounts", "customerId", customer.getCustomerId().toString()));
+
+    return CustomerMapper.mapToCustomerDto(customer, account);
   }
 }
