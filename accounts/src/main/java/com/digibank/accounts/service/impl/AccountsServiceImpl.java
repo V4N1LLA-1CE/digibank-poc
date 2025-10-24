@@ -42,6 +42,25 @@ public class AccountsServiceImpl implements IAccountsService {
     accountsRepository.save(buildNewAccount(savedCustomer));
   }
 
+  @Override
+  public CustomerDto fetchAccount(String mobileNumber) {
+    Customer customer =
+        customerRepository
+            .findByMobileNumber(mobileNumber)
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber));
+
+    Account account =
+        accountsRepository
+            .findByCustomerId(customer.getCustomerId())
+            .orElseThrow(
+                () ->
+                    new ResourceNotFoundException(
+                        "Accounts", "customerId", customer.getCustomerId().toString()));
+
+    return CustomerMapper.mapToCustomerDto(customer, account);
+  }
+
   /**
    * Builds a new Accounts entity with a randomly generated account number. Creates a default
    * Savings account linked to the provided customer.
@@ -63,24 +82,5 @@ public class AccountsServiceImpl implements IAccountsService {
     newAccount.setCreatedBy("Anonymous");
 
     return newAccount;
-  }
-
-  @Override
-  public CustomerDto fetchAccount(String mobileNumber) {
-    Customer customer =
-        customerRepository
-            .findByMobileNumber(mobileNumber)
-            .orElseThrow(
-                () -> new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber));
-
-    Account account =
-        accountsRepository
-            .findByCustomerId(customer.getCustomerId())
-            .orElseThrow(
-                () ->
-                    new ResourceNotFoundException(
-                        "Accounts", "customerId", customer.getCustomerId().toString()));
-
-    return CustomerMapper.mapToCustomerDto(customer, account);
   }
 }
