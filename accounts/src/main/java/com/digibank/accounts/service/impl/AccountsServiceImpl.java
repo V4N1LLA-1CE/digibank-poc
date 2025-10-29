@@ -1,11 +1,13 @@
 package com.digibank.accounts.service.impl;
 
 import com.digibank.accounts.constants.AccountsConstants;
+import com.digibank.accounts.dto.AccountDto;
 import com.digibank.accounts.dto.CustomerDto;
 import com.digibank.accounts.entity.Account;
 import com.digibank.accounts.entity.Customer;
 import com.digibank.accounts.exception.CustomerAlreadyExistsException;
 import com.digibank.accounts.exception.ResourceNotFoundException;
+import com.digibank.accounts.mapper.AccountsMapper;
 import com.digibank.accounts.mapper.CustomerMapper;
 import com.digibank.accounts.repository.AccountsRepository;
 import com.digibank.accounts.repository.CustomerRepository;
@@ -15,6 +17,7 @@ import java.util.Optional;
 import java.util.Random;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -32,8 +35,14 @@ public class AccountsServiceImpl implements IAccountsService {
           "Customer already registered with given mobile number: " + customerDto.mobileNumber());
     }
 
-    // turn into customer entity and create in database
-    Customer customerToSave = CustomerMapper.mapToCustomer(customerDto);
+    // create customer entity and save in database
+    Customer customerToSave =
+        Customer.builder()
+            .fullname(customerDto.fullname())
+            .email(customerDto.email())
+            .mobileNumber(customerDto.mobileNumber())
+            .build();
+
     customerToSave.setCreatedAt(LocalDateTime.now());
     customerToSave.setCreatedBy("Anonymous");
     Customer savedCustomer = customerRepository.save(customerToSave);
@@ -56,9 +65,42 @@ public class AccountsServiceImpl implements IAccountsService {
             .orElseThrow(
                 () ->
                     new ResourceNotFoundException(
-                        "Accounts", "customerId", customer.getCustomerId().toString()));
+                        "Account", "customerId", customer.getCustomerId().toString()));
 
     return CustomerMapper.mapToCustomerDto(customer, account);
+  }
+
+  @Override
+  @Transactional
+  public boolean updateAccount(CustomerDto customerDto) {
+    AccountDto accountDto = customerDto.account();
+    if (accountDto == null) {
+      return false;
+    }
+
+    // fetch account and customer
+    // throw exception if not found on either
+    Account account =
+        accountsRepository
+            .findById(accountDto.accountNumber())
+            .orElseThrow(
+                () ->
+                    new ResourceNotFoundException(
+                        "Account", "accountNumber", accountDto.accountNumber().toString()));
+
+    Customer customer =
+        customerRepository
+            .findById(account.getCustomerId())
+            .orElseThrow(
+                () ->
+                    new ResourceNotFoundException(
+                        "Customer", "customerId", account.getCustomerId().toString()));
+
+    // update entities using JPA dirty checking
+    AccountsMapper.mapToAccounts(accountDto, account);
+    CustomerMapper.mapToCustomer(customerDto, customer);
+
+    return true;
   }
 
   /**

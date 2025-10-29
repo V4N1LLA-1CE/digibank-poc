@@ -14,11 +14,9 @@ public final class AccountsMapper {
         account.getAccountNumber(), account.getAccountType(), account.getBranchAddress());
   }
 
-  public static Account mapToAccounts(AccountDto accountsDto) {
-    return Account.builder()
-        .accountNumber(accountsDto.accountNumber())
-        .accountType(accountsDto.accountType())
-        .branchAddress(accountsDto.branchAddress())
-        .build();
+  public static Account mapToAccounts(AccountDto accountDto, Account account) {
+    account.setAccountType(accountDto.accountType());
+    account.setBranchAddress(accountDto.branchAddress());
+    return account;
   }
 }

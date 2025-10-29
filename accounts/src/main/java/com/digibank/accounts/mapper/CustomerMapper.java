@@ -11,14 +11,6 @@ public final class CustomerMapper {
     // restrict instantiation
   }
 
-  public static Customer mapToCustomer(CustomerDto customerDto) {
-    return Customer.builder()
-        .fullname(customerDto.fullname())
-        .email(customerDto.email())
-        .mobileNumber(customerDto.mobileNumber())
-        .build();
-  }
-
   public static CustomerDto mapToCustomerDto(Customer customer) {
     return mapToCustomerDto(customer, null);
   }
@@ -31,5 +23,12 @@ public final class CustomerMapper {
 
     return new CustomerDto(
         customer.getFullname(), customer.getEmail(), customer.getMobileNumber(), accountDto);
+  }
+
+  public static Customer mapToCustomer(CustomerDto customerDto, Customer customer) {
+    customer.setFullname(customerDto.fullname());
+    customer.setEmail(customerDto.email());
+    customer.setMobileNumber(customerDto.mobileNumber());
+    return customer;
   }
 }
