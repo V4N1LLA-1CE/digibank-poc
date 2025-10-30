@@ -103,6 +103,20 @@ public class AccountsServiceImpl implements IAccountsService {
     return true;
   }
 
+  @Override
+  public boolean deleteAccount(String mobileNumber) {
+    Customer customer =
+        customerRepository
+            .findByMobileNumber(mobileNumber)
+            .orElseThrow(
+                () ->
+                    new ResourceNotFoundException(
+                        "Account", "mobileNumber", mobileNumber.toString()));
+    accountsRepository.deleteByCustomerId(customer.getCustomerId());
+    customerRepository.deleteById(customer.getCustomerId());
+    return true;
+  }
+
   /**
    * Builds a new Accounts entity with a randomly generated account number. Creates a default
    * Savings account linked to the provided customer.
