@@ -26,6 +26,7 @@ public class AccountsServiceImpl implements IAccountsService {
   private final CustomerRepository customerRepository;
   private final AccountsRepository accountsRepository;
 
+  @Transactional
   @Override
   public void createAccount(CustomerDto customerDto) {
     // check if there is existing user using the same mobile number in the database
@@ -104,6 +105,7 @@ public class AccountsServiceImpl implements IAccountsService {
   }
 
   @Override
+  @Transactional
   public boolean deleteAccount(String mobileNumber) {
     Customer customer =
         customerRepository
