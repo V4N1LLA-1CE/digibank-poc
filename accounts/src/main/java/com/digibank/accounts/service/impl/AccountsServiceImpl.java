@@ -12,7 +12,6 @@ import com.digibank.accounts.mapper.CustomerMapper;
 import com.digibank.accounts.repository.AccountsRepository;
 import com.digibank.accounts.repository.CustomerRepository;
 import com.digibank.accounts.service.IAccountsService;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 import lombok.AllArgsConstructor;
@@ -44,8 +43,6 @@ public class AccountsServiceImpl implements IAccountsService {
             .mobileNumber(customerDto.mobileNumber())
             .build();
 
-    customerToSave.setCreatedAt(LocalDateTime.now());
-    customerToSave.setCreatedBy("Anonymous");
     Customer savedCustomer = customerRepository.save(customerToSave);
 
     // create a new account for customer that has just been saved
@@ -135,9 +132,6 @@ public class AccountsServiceImpl implements IAccountsService {
             .accountType(AccountsConstants.SAVINGS)
             .branchAddress(AccountsConstants.ADDRESS)
             .build();
-
-    newAccount.setCreatedAt(LocalDateTime.now());
-    newAccount.setCreatedBy("Anonymous");
 
     return newAccount;
   }
