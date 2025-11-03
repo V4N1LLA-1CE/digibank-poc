@@ -2,9 +2,12 @@ package com.digibank.accounts.controller;
 
 import com.digibank.accounts.constants.AccountsConstants;
 import com.digibank.accounts.dto.CustomerDto;
+import com.digibank.accounts.dto.ErrorResponseDto;
 import com.digibank.accounts.dto.ResponseDto;
 import com.digibank.accounts.service.IAccountsService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -68,7 +71,10 @@ public class AccountsController {
       description = "This endpoint allows update to Account and Customer details")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "HTTP Status Ok"),
-    @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error")
+    @ApiResponse(
+        responseCode = "500",
+        description = "HTTP Status Internal Server Error",
+        content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PutMapping("")
   public ResponseEntity<ResponseDto> updateAccountDetails(
