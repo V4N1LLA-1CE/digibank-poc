@@ -81,7 +81,7 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
           <image>
-            <name>vanillaiceee/${project.artifactId}:s4</name>
+            <name>vanillaiceee/${project.artifactId}:${project.version}</name>
           </image>
         </configuration>
       </plugin>
