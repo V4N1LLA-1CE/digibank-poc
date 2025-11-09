@@ -1,0 +1,40 @@
+services:
+  accounts:
+    image: "vanillaiceee/accounts:0.0.1-SNAPSHOT"
+    container_name: accounts-ms
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - digibank
+
+  loans:
+    image: "vanillaiceee/loans:0.0.1-SNAPSHOT"
+    container_name: loans-ms
+    ports:
+      - "8090:8090"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - digibank
+
+  cards:
+    image: "vanillaiceee/cards:0.0.1-SNAPSHOT"
+    container_name: cards-ms
+    ports:
+      - "9000:9000"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - digibank
+
+networks:
+  digibank:
+    driver: "bridge"
