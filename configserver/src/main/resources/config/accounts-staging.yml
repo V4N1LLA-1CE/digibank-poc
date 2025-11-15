@@ -1,0 +1,6 @@
+build:
+  version: "1.0.0-staging"
+
+environment:
+  name: "staging"
+  description: "Staging Environment"

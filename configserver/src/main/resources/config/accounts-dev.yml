@@ -1,0 +1,6 @@
+build:
+  version: "1.0.0-dev"
+
+environment:
+  name: "dev"
+  description: "Development Environment"

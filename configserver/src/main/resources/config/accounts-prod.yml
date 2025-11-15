@@ -1,0 +1,6 @@
+build:
+  version: "1.0.0-prod"
+
+environment:
+  name: "prod"
+  description: "Production Environment"
